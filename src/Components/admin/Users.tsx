@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { Plus, Search, MoreHorizontal } from "lucide-react";
+import AddUser from "./AddUser"; // path s7i7 dyal AddUser.js
 
 const Users = () => {
+  const [showAddUser, setShowAddUser] = useState(false);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       {/* HEADER */}
       <div className="flex justify-between items-start">
         <div>
@@ -12,7 +16,10 @@ const Users = () => {
           </p>
         </div>
 
-        <button className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-700">
+        <button
+          onClick={() => setShowAddUser(true)}
+          className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-700"
+        >
           <Plus size={16} />
           Nouvel utilisateur
         </button>
@@ -21,7 +28,7 @@ const Users = () => {
       {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: "Total utilisateurs", value: 8, extra: "+12% ce mois" },
+          { label: "Total utilisateurs", value: 8 },
           { label: "Utilisateurs actifs", value: 6 },
           { label: "Utilisateurs inactifs", value: 2 },
           { label: "Médecins", value: 3 },
@@ -156,9 +163,7 @@ const Users = () => {
                   </span>
                 </td>
 
-                <td className="px-4 py-3 text-gray-500">
-                  {user.date}
-                </td>
+                <td className="px-4 py-3 text-gray-500">{user.date}</td>
 
                 <td className="px-4 py-3 text-right">
                   <MoreHorizontal className="text-gray-400 cursor-pointer" />
@@ -168,6 +173,13 @@ const Users = () => {
           </tbody>
         </table>
       </div>
+
+      {/* MODAL AddUser */}
+      {showAddUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <AddUser onClose={() => setShowAddUser(false)} />
+        </div>
+      )}
     </div>
   );
 };
