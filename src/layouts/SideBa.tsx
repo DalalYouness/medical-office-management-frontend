@@ -1,9 +1,17 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Settings, LogOut } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { useState } from "react";
 import LogoutModal from "../Components/admin/LogoutModal";
 
-const SideBa = () => {
+const Sideba = ({ menu }: { menu: any[] }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/login");
+  };
+
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition ${
       isActive
@@ -11,55 +19,57 @@ const SideBa = () => {
         : "text-gray-600 hover:bg-gray-100"
     }`;
 
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    // hna t9dr t7yd token/localStorage si kayn
-    navigate("/login"); // redirection llogin
-  };
-
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* SIDEBAR */}
-      <aside className="w-64 bg-white border-r flex flex-col">
-        {/* LOGO */}
-        <div className="flex items-center gap-3 px-6 py-5 border-b">
-          <div className="h-9 w-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold">
-            MC
+      <aside
+        className={`bg-white border-r flex flex-col transition-all duration-300 ${
+          collapsed ? "w-20" : "w-64"
+        }`}
+      >
+        {/* LOGO + COLLAPSE BUTTON */}
+        <div className="flex items-center justify-between px-3 py-4 border-b">
+          <div
+            className={`flex items-center gap-3 ${
+              collapsed ? "justify-center w-full" : ""
+            }`}
+          >
+            <div className="h-9 w-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold">
+              MC
+            </div>
+            {!collapsed && (
+              <div>
+                <p className="text-sm font-semibold">MediCab</p>
+                <p className="text-xs text-gray-500">Interface</p>
+              </div>
+            )}
           </div>
-          <div>
-            <p className="text-sm font-semibold">MediCab</p>
-            <p className="text-xs text-gray-500">Administration</p>
-          </div>
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="p-1 hover:bg-gray-200 rounded"
+          >
+            <Menu size={18} />
+          </button>
         </div>
 
         {/* MENU */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          <NavLink to="/admin/dashboard" className={linkClass}>
-            <LayoutDashboard size={18} />
-            Tableau de bord
-          </NavLink>
-
-          <NavLink to="/admin/users" className={linkClass}>
-            <Users size={18} />
-            Utilisateurs
-          </NavLink>
-
-          <NavLink to="/admin/settings" className={linkClass}>
-            <Settings size={18} />
-            Paramètres
-          </NavLink>
+        <nav className="flex-1 px-1 py-4 space-y-1">
+          {menu.map((item) => (
+            <NavLink key={item.path} to={item.path} className={linkClass}>
+              <item.icon size={18} />
+              {!collapsed && item.label}
+            </NavLink>
+          ))}
         </nav>
 
         {/* LOGOUT */}
         <div className="px-3 py-4 border-t">
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-lg"
+            className="flex hover:text-red-700 items-center gap-3 w-full px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-lg"
           >
             <LogOut size={18} />
-            Déconnexion
+            {!collapsed && "Déconnexion"}
           </button>
         </div>
       </aside>
@@ -80,4 +90,4 @@ const SideBa = () => {
   );
 };
 
-export default SideBa;
+export default Sideba;
